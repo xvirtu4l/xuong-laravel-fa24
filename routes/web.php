@@ -187,7 +187,15 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-Route::resource('employees', EmployeeController::class);
-Route::delete('employees/{employee}/forceDestroy', [EmployeeController::class, 'forceDestroy'])->name('employees.forceDestroy');    
 Auth::routes();
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
+
+Route::group(['middleware' => 'RoleMiddleware'], function () {
+    Route::resource('employees', EmployeeController::class);
+    Route::delete('employees/{employee}/forceDestroy', [EmployeeController::class, 'forceDestroy'])->name('employees.forceDestroy');
+});
+
+
+Route::get('/movies', function () {
+    return view('movies');
+})->middleware('checkAge');
