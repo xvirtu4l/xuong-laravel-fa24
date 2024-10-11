@@ -6,6 +6,7 @@ use App\Models\Financial_report;
 use App\Models\Sale;
 use App\Models\Tax;
 use App\Models\users;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
@@ -20,22 +21,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+// Route::get('/', function () {
 
-    // $users = DB::table('users')->get();
+//     // $users = DB::table('users')->get();
 
-    // foreach ($users as $user) {
-    //     dd($user->name);
-    // }
+//     // foreach ($users as $user) {
+//     //     dd($user->name);
+//     // }
 
-    $query = DB::table('users');
+//     $query = DB::table('users');
 
-    $first = $query->first();
+//     $first = $query->first();
 
-    // dd($first);
+//     // dd($first);
 
-    return view('welcome');
-});
+//     return view('welcome');
+// });
 
 // Route::get('buoi1', function() {
 
@@ -188,5 +189,5 @@ Route::get('/', function () {
 
 Route::resource('employees', EmployeeController::class);
 Route::delete('employees/{employee}/forceDestroy', [EmployeeController::class, 'forceDestroy'])->name('employees.forceDestroy');    
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Auth::routes();
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
