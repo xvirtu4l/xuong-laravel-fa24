@@ -37,7 +37,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Route::get('sql', function() {
+// Route::get('buoi1', function() {
 
 //         $bai1 = DB::table('users as u')
 //         ->join('orders as o', 'u.id', 'o.user_id')
@@ -135,7 +135,7 @@ Route::get('/', function () {
 // });
 
 
-// Route::get('doichieu', function () {
+// Route::get('buoi2', function () {
 
 //     $cau1 = Sale::select(
 //         DB::raw("SUM(total) as total_sales, EXTRACT(MONTH FROM sale_date) as sale_month, EXTRACT(YEAR FROM sale_date) as sale_year")
@@ -187,8 +187,6 @@ Route::get('/', function () {
 // });
 
 Route::resource('employees', EmployeeController::class);
-Route::delete('employees/{employee}/forceDestroy', [EmployeeController::class, 'forceDestroy'])->name('employees.forceDestroy');
-
-Auth::routes();
+Route::delete('employees/{employee}/forceDestroy', [EmployeeController::class, 'forceDestroy'])->name('employees.forceDestroy');    
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
