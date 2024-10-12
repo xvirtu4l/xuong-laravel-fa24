@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
@@ -15,9 +16,8 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {   
-        $userRole = $request->user()->role; // Giả sử vai trò người dùng được lưu trong cột 'role' của bảng users
-        $role = "admin";
-        if ($userRole != $role) {
+        $user = Auth::user();
+        if ($user && $user->role != 'admin') {
             return redirect('/')->with('error', 'Bạn không có quyền truy cập trang này.');
         }
 

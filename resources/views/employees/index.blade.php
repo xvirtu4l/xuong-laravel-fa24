@@ -5,7 +5,12 @@
 @endsection
 
 @section('content')
-    <h1>Danh sách nhân viên</h1>
+    <h1>
+        Danh sách nhân viên
+
+        <a class="btn btn-success" href="{{ route('employees.create') }}">Thêm mới</a>
+
+    </h1>
 
     <div class="table-responsive">
         <table class="table table-primary">
@@ -65,14 +70,29 @@
 
                         <td>
                             {{-- TO-DO Action --}}
-                            <a class="btn btn-primary" href="{{ route('employees.show', $employee) }}">Show</a>
+                            <a class="btn btn-secondary" href="{{ route('employees.show', $employee) }}">Show</a>
                             <a class="btn btn-primary" href="{{ route('employees.edit', $employee) }}">Edit</a>
-                            <a class="btn btn-primary" href="#">Soft Delete</a>
-                            <a class="btn btn-primary" href="#">Force Delete</a>
+                            <form action="{{ route('employees.destroy', $employee) }}" method="post">
+                                {{-- Xoá mềm --}}
+                                @csrf
+                                @method('DELETE')
+
+                                <button type="submit" class="btn btn-warning" onclick="return confirm('Are you sure?')">Thùng rác</button>
+                            </form>
+
+                            <form action="{{ route('employees.forceDestroy', $employee) }}" method="post">
+                                {{-- Xoá cứng --}}
+                                @csrf
+                                @method('DELETE')
+
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Xoá</button>
+                            </form>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
+
+        {{ $data->links() }}
     </div>
 @endsection

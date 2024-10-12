@@ -25,5 +25,7 @@ class Employee extends Model
         'profile_picture'
     ];
 
-    
+    public $attributes = [
+        'is_active' => 0
+    ];
 }
