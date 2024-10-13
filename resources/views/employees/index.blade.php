@@ -60,7 +60,7 @@
 
                         <td>
                             @if ($employee->profile_picture)
-                                <img src="{{ Storage::url($employee->profile_picture) }}" width="100px">
+                            <img src="data:image/jpeg;base64,{{ base64_encode($employee->profile_picture) }}" width="100px" alt="Profile Picture">
                             @endif
                         </td>
 
@@ -87,6 +87,13 @@
 
                                 <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Xoá</button>
                             </form>
+
+                            @if($employee->deleted_at)
+                                <form action="{{ route('employees.restore', $employee) }}" method="post" style="display:inline;">
+                                    @csrf
+                                    <button type="submit" class="btn btn-info" onclick="return confirm('Khôi phục bản ghi?')">Khôi phục</button>
+                                </form>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

@@ -101,6 +101,7 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
 Route::group(['middleware' => 'RoleMiddleware'], function () {
     Route::resource('employees', EmployeeController::class);
     Route::delete('employees/{employee}/forceDestroy', [EmployeeController::class, 'forceDestroy'])->name('employees.forceDestroy');
+    Route::post('employees/{employee}/restore', [EmployeeController::class, 'restore'])->name('employees.restore');
 });
 
 

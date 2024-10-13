@@ -28,4 +28,6 @@ class Employee extends Model
     public $attributes = [
         'is_active' => 0
     ];
+
+    protected $dates = ['deleted_at'];
 }

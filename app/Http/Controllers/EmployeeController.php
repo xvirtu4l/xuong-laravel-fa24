@@ -31,7 +31,7 @@ class EmployeeController extends Controller
     {
         $departments = Department::all();
 
-        
+
         $managers = collect();
 
         if ($request->has('department_id') && !empty($request->department_id)) {
@@ -86,15 +86,25 @@ class EmployeeController extends Controller
      */
     public function show(Employee $employee)
     {
+
         return view(self::PATH_VIEW . __FUNCTION__, compact('employee'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Employee $employee)
+    public function edit(Employee $employee, Request $request)
     {
-        return view(self::PATH_VIEW . __FUNCTION__, compact('employee'));
+        $departments = Department::all();
+
+        // Lấy department_id từ request hoặc từ nhân viên hiện tại (nếu chưa chọn phòng ban)
+        $selectedDepartmentId = $request->input('department_id', $employee->department_id);
+
+        // Lấy danh sách quản lý dựa trên phòng ban đã chọn (hoặc từ nhân viên hiện tại)
+        $managers = Manager::where('department_id', $selectedDepartmentId)->get();
+
+
+        return view(self::PATH_VIEW . __FUNCTION__, compact('departments', 'selectedDepartmentId', 'managers', 'employee'));
     }
 
     /**
@@ -107,8 +117,6 @@ class EmployeeController extends Controller
             'last_name'       => 'required|max:255',
             'email'           => 'required|email|max:255',
             'phone'           => ['required', 'string', 'max:20', Rule::unique('employees')->ignore($employee->id)],
-            'date_of_birth'   => 'required|date',
-            'hire_date'       => 'required|date',
             'salary'          => 'required|numeric|min:0',
             'is_active'       => ['nullable', Rule::in([0, 1])],
             'department_id'   => 'required|exists:departments,id',
@@ -147,9 +155,10 @@ class EmployeeController extends Controller
     {
         try {
             $employee->delete();
+            return back()->with('success', true);
         } catch (\Throwable $th) {
             return back()
-                ->with('success', true)
+                ->with('success', false)
                 ->with('error', $th->getMessage());
         }
     }
@@ -162,10 +171,18 @@ class EmployeeController extends Controller
             if (!empty($employee->profile_picture) && Storage::exists($employee->profile_picture)) {
                 Storage::delete($employee->profile_picture);
             }
+
+            return redirect()->route('employees.index')->with('success', true);
         } catch (\Throwable $th) {
-            return back()
-                ->with('success', true)
+            return redirect()->route('employees.index')
+                ->with('success', false)
                 ->with('error', $th->getMessage());
         }
+    }
+
+    public function restore(Employee $employee)
+    {
+        $employee->restore();
+        return redirect()->route('employees.index')->with('success', true);
     }
 }
