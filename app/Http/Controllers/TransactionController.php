@@ -4,68 +4,66 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class TransactionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    public function startTransaction(Request $request)
     {
-        //
+        $request->session()->put('transaction', [
+            'step' => 1,
+            'data' => [
+                'amount' => $request->input('amount'),
+                'to_account' => $request->input('to_account'),
+            ]
+        ]);
+        return view('transactions.step1');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function confirmTransaction(Request $request)
     {
-        //
+        $request->validate([
+            'amount' => 'required|numeric|min:0',
+            'to_account' => 'required|string',
+        ]);
+    
+        // Lưu dữ liệu vào session
+        $request->session()->put('transaction', [
+            'step' => 2,
+            'data' => [
+                'amount' => number_format((float)$request->input('amount'), 2, '.', ''),
+                'to_account' => $request->input('to_account'),
+            ]
+        ]);
+
+        return view('transactions.confirm', [
+            'transaction' => $request->session()->get('transaction')
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function completeTransaction(Request $request)
     {
-        //
+        $transaction = $request->session()->get('transaction');
+        // Lưu vào cơ sở dữ liệu hoặc thực hiện các bước hoàn tất giao dịch
+        DB::table('transactions')->insert([
+            'amount' => $transaction['data']['amount'],
+            'to_account' => $transaction['data']['to_account'],
+            'status' => 'completed',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        // Xóa thông tin giao dịch khỏi session
+        $request->session()->forget('transaction');
+
+        return view('transactions.complete');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Transaction $transaction)
+    public function cancelTransaction(Request $request)
     {
-        if (session()->has('transaction')) {
-            $transaction = session('transaction');
-
-            return view('transaction.show', ['transaction' => $transaction]);
-        } else {
-            return redirect('/')->with('error', 'Không có giao dịch nào đang thực hiện.');
-        }
+        $request->session()->forget('transaction');
+        return redirect()->route('home')->with('message', 'Giao dịch đã bị hủy');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Transaction $transaction)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Transaction $transaction)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Transaction $transaction)
-    {
-        //
-    }
 }

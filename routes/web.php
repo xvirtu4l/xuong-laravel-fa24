@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\TransactionController;
 use App\Models\Expense;
 use App\Models\Financial_report;
 use App\Models\Sale;
@@ -96,12 +97,19 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Auth::routes();
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::group(['middleware' => 'RoleMiddleware'], function () {
     Route::resource('employees', EmployeeController::class);
     Route::delete('employees/{employee}/forceDestroy', [EmployeeController::class, 'forceDestroy'])->name('employees.forceDestroy');
     Route::post('employees/{employee}/restore', [EmployeeController::class, 'restore'])->name('employees.restore');
+});
+
+Route::middleware(['transaction'])->group(function () {
+    Route::get('/start-transaction', [TransactionController::class, 'startTransaction'])->name('start-transaction');
+    Route::post('/confirm-transaction', [TransactionController::class, 'confirmTransaction'])->name('confirm-transaction');
+    Route::post('/complete-transaction', [TransactionController::class, 'completeTransaction'])->name('complete-transaction');
+    Route::post('/cancel-transaction', [TransactionController::class, 'cancelTransaction'])->name('cancel-transaction');
 });
 
 

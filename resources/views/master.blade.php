@@ -89,6 +89,7 @@
                 >
                 <a class="nav-link" href="{{ route('employees.index') }}">Quản lý Nhân viên</a>
                 <a class="nav-link" href="{{ url('/movies') }}">Movies</a>
+                <a class="nav-link" href="{{ route('start-transaction') }}">Giao dịch</a>
             </nav>
             
         </header>
