@@ -7,59 +7,75 @@ use Illuminate\Http\Request;
 
 class SubjectController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+
+        $data = Subject::latest()->paginate(5);
+        return view('subjects.index', compact('data'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('subjects.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        // Validate data
+        $data = $request->validate([
+            'name' => 'required',
+            'credits' => 'required|integer',
+        ]);
+
+        try {
+            Subject::create($data);
+            return redirect()->route('subjects.index')->with('success', 'Subject created successfully.');
+        } catch (\Throwable $th) {
+            return back()->with('success', false)->with('error', $th->getMessage());
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Subject $subject)
     {
-        //
+        try {
+            return view('subjects.show', compact('subject'));
+        } catch (\Throwable $th) {
+            return back()->with('success', false)->with('error', $th->getMessage());
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Subject $subject)
     {
-        //
+        try {
+            return view('subjects.edit', compact('subject'));
+        } catch (\Throwable $th) {
+            return back()->with('success', false)->with('error', $th->getMessage());
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Subject $subject)
     {
-        //
+        // Validate data
+        $data = $request->validate([
+            'name' => 'required',
+            'credits' => 'required|integer',
+        ]);
+
+        try {
+            $subject->update($data);
+            return redirect()->route('subjects.index')->with('success', 'Subject updated successfully.');
+        } catch (\Throwable $th) {
+            return back()->with('success', false)->with('error', $th->getMessage());
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Subject $subject)
     {
-        //
+        try {
+            $subject->delete();
+            return redirect()->route('subjects.index')->with('success', 'Subject deleted successfully.');
+        } catch (\Throwable $th) {
+            return back()->with('success', false)->with('error', $th->getMessage());
+        }
     }
 }

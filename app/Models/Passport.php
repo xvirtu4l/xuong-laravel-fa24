@@ -8,4 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Passport extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'passport_number', 
+        'issued_date', 
+        'expiry_date', 
+        'student_id'
+    ];
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
 }

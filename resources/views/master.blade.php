@@ -90,10 +90,14 @@
                 <a class="nav-link" href="{{ route('employees.index') }}">Quản lý Nhân viên</a>
                 <a class="nav-link" href="{{ url('/movies') }}">Movies</a>
                 <a class="nav-link" href="{{ route('start-transaction') }}">Giao dịch</a>
+                <a class="nav-link" href="{{ route('sql.index') }}">SQL</a>
+                <a class="nav-link" href="{{ route('students.index') }}">Quản lý Sinh viên</a>
+                <a class="nav-link" href="{{ route('subjects.index') }}">Quản lý Môn học</a>
+                <a class="nav-link" href="{{ route('classrooms.index') }}">Quản lý Lớp hoc</a>
             </nav>
             
         </header>
-        <main class="py-4">
+        <main class="container py-4">
             @yield('content')
         </main>
     </div>

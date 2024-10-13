@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('passports', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('student_id')->constrained()->onDelete('cascade');
+            $table->string('passport_number')->unique();
+            $table->date('issued_date');
+            $table->date('expiry_date');
             $table->timestamps();
         });
     }

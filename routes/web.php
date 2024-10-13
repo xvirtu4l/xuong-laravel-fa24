@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\SQLhw;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TransactionController;
 use App\Models\Expense;
 use App\Models\Financial_report;
@@ -103,6 +107,12 @@ Route::group(['middleware' => 'RoleMiddleware'], function () {
     Route::resource('employees', EmployeeController::class);
     Route::delete('employees/{employee}/forceDestroy', [EmployeeController::class, 'forceDestroy'])->name('employees.forceDestroy');
     Route::post('employees/{employee}/restore', [EmployeeController::class, 'restore'])->name('employees.restore');
+    
+    Route::get('/students/search', [StudentController::class, 'search'])->name('students.search');
+    Route::resource('students', StudentController::class);
+
+    Route::resource('classrooms', ClassroomController::class);
+    Route::resource('subjects', SubjectController::class);
 });
 
 Route::middleware(['transaction'])->group(function () {
@@ -112,6 +122,7 @@ Route::middleware(['transaction'])->group(function () {
     Route::post('/cancel-transaction', [TransactionController::class, 'cancelTransaction'])->name('cancel-transaction');
 });
 
+Route::resource('sql', SQLhw::class);
 
 Route::get('/movies', function () {
     return view('movies');

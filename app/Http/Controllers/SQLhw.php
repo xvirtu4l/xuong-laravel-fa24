@@ -105,8 +105,21 @@ class SQLhw extends Controller
         ->havingRaw("total_sold = ({$combine->toSql()})");
 
 
-        // dd($bai10->toRawSql());
-        return view('sql');
+        $queries = [
+            'bai1' => $bai1->toSql(),
+            'bai2' => $bai2->toSql(),
+            'bai3' => $bai3->toSql(),
+            'bai4' => $bai4->toSql(),
+            'bai5' => $bai5->toSql(),
+            'bai6' => $bai6->toSql(),
+            'bai7' => $bai7->toSql(),
+            'bai8' => $bai8->toSql(),
+            'bai9' => $bai9->toSql(),
+            'bai10' => $bai10->toSql(),
+        ];
+    
+        // Truyền các câu truy vấn đến view
+        return view('sql', compact('queries'));
     }
 
     /**
