@@ -15,13 +15,12 @@ class RoleMiddleware
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
-    {   
-        $user = Auth::user();
-        if ($user && $user->role != 'admin') {
+    {
+        if (!Auth::check() || Auth::user()->role != 'admin') {
             return redirect('/')->with('error', 'Bạn không có quyền truy cập trang này.');
         }
 
-        return $next($request);
 
+        return $next($request);
     }
 }
