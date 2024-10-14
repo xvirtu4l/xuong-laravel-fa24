@@ -104,6 +104,19 @@ Auth::routes();
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+Route::resource('sql', SQLhw::class)->middleware('auth');
+
+Route::get('/movies', function () {
+    return view('movies');
+})->middleware(['auth','checkAge']);
+
+Route::middleware(['auth','transaction'])->group(function () {
+    Route::get('/start-transaction', [TransactionController::class, 'startTransaction'])->name('start-transaction');
+    Route::post('/confirm-transaction', [TransactionController::class, 'confirmTransaction'])->name('confirm-transaction');
+    Route::post('/complete-transaction', [TransactionController::class, 'completeTransaction'])->name('complete-transaction');
+    Route::post('/cancel-transaction', [TransactionController::class, 'cancelTransaction'])->name('cancel-transaction');
+});
+
 Route::group(['middleware' => 'RoleMiddleware'], function () {
     Route::resource('employees', EmployeeController::class);
     Route::delete('employees/{employee}/forceDestroy', [EmployeeController::class, 'forceDestroy'])->name('employees.forceDestroy');
@@ -114,17 +127,4 @@ Route::group(['middleware' => 'RoleMiddleware'], function () {
 
     Route::resource('classrooms', ClassroomController::class);
     Route::resource('subjects', SubjectController::class);
-
-    Route::resource('sql', SQLhw::class);
-
-    Route::get('/movies', function () {
-        return view('movies');
-    })->middleware('checkAge');
-
-    Route::middleware(['transaction'])->group(function () {
-        Route::get('/start-transaction', [TransactionController::class, 'startTransaction'])->name('start-transaction');
-        Route::post('/confirm-transaction', [TransactionController::class, 'confirmTransaction'])->name('confirm-transaction');
-        Route::post('/complete-transaction', [TransactionController::class, 'completeTransaction'])->name('complete-transaction');
-        Route::post('/cancel-transaction', [TransactionController::class, 'cancelTransaction'])->name('cancel-transaction');
-    });
 });
